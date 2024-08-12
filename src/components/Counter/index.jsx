@@ -5,22 +5,8 @@ import {
   setStep,
 } from "./../../store/slices/counterSlice";
 
-function Counter({ count, step, dispatch }) {
-  const dec = () => {
-    // setCount (count-step)
-    const action = decrement();
-    dispatch(action);
-  };
-
-  const inc = () => {
-    const action = increment();
-    dispatch(action);
-  };
-
-  const changeStep = ({ target: { value } }) => {
-    const action = setStep(Number(value));
-    dispatch(action);
-  };
+function Counter({ count, step, dispatch, dec, inc, updateStep }) {
+  const changeStep = ({ target: { value } }) => updateStep(value);
 
   return (
     <div>
@@ -38,7 +24,15 @@ function mapStateToProps(state) {
   return state.counter;
 } // { count: 0, step: 1,} => Counter({count, state})
 
-const withAccessToStore = connect(mapStateToProps); // HOC
+function mapDispatchToProps(dispatch) {
+  return {
+    dec: () => dispatch(decrement()),
+    inc: () => dispatch(increment()),
+    updateStep: (value) => dispatch(setStep(Number(value))),
+  };
+}
+
+const withAccessToStore = connect(mapStateToProps, mapDispatchToProps); // HOC
 
 export default withAccessToStore(Counter);
 
